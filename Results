@@ -1,0 +1,32 @@
+# Results Analysis: RUL Prediction with Stochastic Programming
+
+## Training Performance
+- Training loss dropped from ~2800 to ~348 within 8 epochs.
+- Validation loss decreased to ~303, showing that the model generalizes reasonably despite noise.
+
+## Prediction Quality
+Sample predictions with uncertainty (mean ± std):
+
+| pred_mean | sigma | target | Remarks |
+|-----------|-------|--------|---------|
+| 99.2 | 5.0 | 81 | Slight overestimate, but confident |
+| 27.0 | 2.3 | 27 | Accurate and confident |
+| 66.3 | 4.3 | 84 | Underestimate with moderate confidence |
+| 5.5 | 1.8 | 6 | Accurate |
+| 63.4 | 4.1 | 103 | Underestimate; low robustness |
+| 8.9 | 1.7 | 0 | Overestimate near failure |
+
+## Uncertainty Insights
+- **Low sigma** means high confidence (even if wrong → biased).
+- **High sigma** warns about unreliable predictions.
+
+## Scenario-Based Decisions
+The stochastic decision module compares expected costs under different actions:
+- **Reuse** is chosen for components with long predicted RUL.
+- **Discard** dominates when predicted RUL is near failure horizon.
+- **Repair** is less common under the current cost parameters, but would become favorable if discard cost increases or repair capacity is limited.
+
+## Conclusion
+- The model balances prediction accuracy and uncertainty estimation.
+- Scenario-based decisions prevent costly failures by acting conservatively when uncertainty is high.
+- Future work: integrate real-world sensor data and evaluate under repair capacity constraints.
